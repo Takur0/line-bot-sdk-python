@@ -66,9 +66,14 @@ def callback():
         if not isinstance(event.message, TextMessage):
             continue
 
+        if body.find('おうむ') != -1:
+            reply_text = "実はぼく、おうむじゃなくてようむなんだぽ…"
+        else:
+            reply_text = event.message.text+"ぽ" 
+        
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=event.message.text)
+            TextSendMessage(text=reply_text)
         )
 
     return 'OK'
