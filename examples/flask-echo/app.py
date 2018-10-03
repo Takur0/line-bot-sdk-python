@@ -18,6 +18,8 @@ import os
 import sys
 from argparse import ArgumentParser
 
+from flask_sqlalchemy import SQLAlchemy
+
 from flask import Flask, request, abort
 from linebot import (
     LineBotApi, WebhookParser
@@ -30,6 +32,14 @@ from linebot.models import (
 )
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
+
+class Message(db.Model): # 追加
+    __tablename__ = "messages" # 追加
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) # 追加
+    body = db.Column(db.String(), nullable=False) # 追加
+
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('YOUR_CHANNEL_SECRET', None)
@@ -52,6 +62,11 @@ def callback():
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
+
+    message = Message()
+    message.body = body
+    db.session.add(message)
+    db.session.commit()
 
     # parse webhook body
     try:
