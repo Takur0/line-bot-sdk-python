@@ -68,12 +68,17 @@ def callback():
 
         if body.find('おうむ') != -1:
             reply_text = "実はぼく、おうむじゃなくてようむなんだぽ…"
+            reply_text_2 = "ごめんぽ…"
+            # array of text message object
+            SendObject = [TextSendMessage(text=reply_text),TextSendMessage(text=reply_text_2)]
+
         else:
             reply_text = event.message.text+"ぽ" 
-        
+            SendObject = TextSendMessage(text=reply_text)
+
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=reply_text)
+            SendObject
         )
 
     return 'OK'
